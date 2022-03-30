@@ -1,0 +1,28 @@
+{
+  "name": "gospel-zoom-puppeteer",
+  "version": "1.0.0",
+  "description": "gospel zoom using chrome puppeteer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/21beckem/Gospel-Zoom-Puppeteer.git"
+  },
+  "keywords": [
+    "Gospel",
+    "Zoom",
+    "Puppeteer"
+  ],
+  "author": "Michael Becker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/21beckem/Gospel-Zoom-Puppeteer/issues"
+  },
+  "homepage": "https://github.com/21beckem/Gospel-Zoom-Puppeteer#readme",
+  "dependencies": {
+    "@nut-tree/nut-js": "^2.0.1",
+    "puppeteer": "^13.5.1"
+  }
+}
