@@ -23,6 +23,8 @@
   "homepage": "https://github.com/21beckem/Gospel-Zoom-Puppeteer#readme",
   "dependencies": {
     "@nut-tree/nut-js": "^2.0.1",
+    "ip": "^1.1.5",
+    "node-global-key-listener": "^0.0.13",
     "puppeteer": "^13.5.1"
   }
 }

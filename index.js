@@ -1,64 +1,75 @@
-const puppeteer = require('puppeteer');
-const { keyboard, Key } = require('@nut-tree/nut-js');
+const { exec } = require("child_process");
+const { GlobalKeyboardListener } = require("node-global-key-listener");
+const v = new GlobalKeyboardListener();
 
-class Bower {
-    sleep(milliseconds) {return new Promise(resolve => setTimeout(resolve, milliseconds));}
-    async init(homepageLink) {
-        this.browser = await puppeteer.launch({
-            headless: false,
-            args: ['--start-fullscreen'],
-            ignoreDefaultArgs: ['--enable-automation'],
-            defaultViewport: null
-        });
-        this.homepage = await this.browser.newPage();
-        this.homepage.goto(homepageLink);
-    }
-    async disconnect() {
-        await this.browser.disconnect();
-        this.browser = null;
-        this.homepage = null;
-        this.zoompage = null;
-    }
-    async launchZoom(startLink, email, password) {
-        this.zoompage = await this.browser.newPage();
+const browser = require('./browser.js');
+const remote = require('./remote.js');
+const remote_server = new remote.server(1830, '/remote');
+const bower = new browser.Bower();
 
-        await this.zoompage.goto('https://zoom.us/switch_account?backUrl=' + encodeURIComponent(startLink));
-        await this.zoompage.evaluate(`
-            document.getElementById('email').value = "` + email + `";
-            document.getElementById('password').value = "` + password + `";
-            document.forms[0].querySelector('button').click();`
-        );
-        await this.zoompage.waitForNavigation();
-        await this.sleep(100);
+let handshake = 12345;
 
-        await keyboard.type(Key.Tab);
-        await keyboard.type(Key.Tab);
-        await keyboard.type(Key.Enter);
-
-        await this.sleep(5000);
-        await this.zoompage.close();
+function generateHandshake() {
+    let hnd = "";
+    for (let i = 0; i < 4; i++) {
+        hnd += Math.floor(Math.random() * 10).toString();
     }
-    /*
-    async evaluate(thisPage, strToEvaluate, putPageOnTop=true) {
-        if (!thisPage instanceof Object) {
-            console.log("ERROR.  The variable given is not an Object");
-            return;
-        }
-        if (putPageOnTop) {
-            await thisPage.bringToFront();
-        }
-        return await thisPage.evaluate(new Function(strToEvaluate));
-    }
-    */
+    handshake = hnd;
 }
 
+v.addListener(async function (e, down) {
+    if (e.state == 'DOWN') {
+        if (bower.zoomRunning) {
+            switch (e.name) {
+                case 'NUMPAD 2':
+                    await bower.zoomToggle('A');
+                    await bower.zoomToggle('V');
+                    break;
+                case 'NUMPAD 3':
+                    if (await bower.zoomPressEnd()) {
+                        await bower.invoke('webinarEnded()');
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (e.name) {
+                case 'NUMPAD 0':
+                    generateHandshake();
+                    await bower.invoke('setHandshake("' + handshake + '")');
+                    await bower.launchZoom('https://zoom.us/s/96138303673', 'brookfieldzoom@gmail.com', '4Nephi112');
+                    break;
+                case 'BACKSPACE':
+                    //exec('shutdown /s /t 1');
+                    console.log('would normally shut down now...');
+                    break;
+                default:
+                    break;
+            }
+        }
+        return true;
+    }
+});
+
+const togglefeed = async function() {
+    console.log('toggle feed');
+}
+const endmeeting = async function() {
+    console.log('end meeting');
+}
+
+async function remoteConnected() {
+    await bower.invoke('remoteConnected()')
+}
+
+// main
 (async () => {
-    const bower = new Bower();
-    await bower.init("file:///" + __dirname + '/web/index.html');
-    //await bower.sleep(1000);
-    //await bower.evaluate(bower.homepage, 'document.write("hi");return "hello"');
-    await bower.sleep(1000);
-    await bower.launchZoom('https://zoom.us/s/96138303673', 'brookfieldzoom@gmail.com', '4Nephi112');
-    await bower.sleep(3000);
-    await bower.disconnect();
+    remote_server.setSpecialResponses([
+        ['/togglefeed', togglefeed],
+        ['/endmeeting', endmeeting]
+    ])
+    remote_server.begin(remoteConnected);
+    let remoteAddr = [remote_server.host, remote_server.port]
+    await bower.init("file:///" + __dirname + '/web/index.html?qr=' + JSON.stringify(remoteAddr));
 })();
