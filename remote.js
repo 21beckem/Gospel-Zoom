@@ -1,6 +1,6 @@
-const http = require("http");
-const fs = require('fs').promises;
-const ip = require('ip');
+const http = require("http"),
+    fs = require('fs').promises,
+    ip = require('ip');
 
 var folderDir = '';
 var onConnect = () => {};
@@ -102,7 +102,7 @@ const content_type = {
     'zip' : 'application/zip',
 }
 
-class server {
+class REMOTEserver {
     constructor(port, dir) {
         this.host = ip.address();
         this.port = port;
@@ -126,10 +126,11 @@ class server {
 
         //handle special occurances
         if (specialResponses_url.includes(reqUrl)) {
-            specialResponses_func[specialResponses_url.indexOf(reqUrl)]();
+            let url_query = new URLSearchParams(reqParams);
             res.setHeader("Content-Type", 'text/plain');
             res.writeHead(200);
-            res.end("1");
+            let ret = specialResponses_func[specialResponses_url.indexOf(reqUrl)](url_query.get('x'));
+            res.end(ret);
             return;
         }
 
@@ -158,4 +159,4 @@ class server {
         console.log("specialResponses_url:", specialResponses_func);
     }
 }
-module.exports = { server };
+module.exports = { REMOTEserver };

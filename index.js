@@ -3,11 +3,15 @@ const { GlobalKeyboardListener } = require("node-global-key-listener");
 const v = new GlobalKeyboardListener();
 
 const browser = require('./browser.js');
-const remote = require('./remote.js');
-const remote_server = new remote.server(1830, '/remote');
+const remote = require('./new-remote.js');
+const remote_server = new remote.IO_REMOTE(1820);
 const bower = new browser.Bower();
 
 let handshake = 12345;
+
+function getHand() {
+    return handshake;
+}
 
 function generateHandshake() {
     let hnd = "";
@@ -22,13 +26,10 @@ v.addListener(async function (e, down) {
         if (bower.zoomRunning) {
             switch (e.name) {
                 case 'NUMPAD 2':
-                    await bower.zoomToggle('A');
-                    await bower.zoomToggle('V');
+                    togglefeed();
                     break;
                 case 'NUMPAD 3':
-                    if (await bower.zoomPressEnd()) {
-                        await bower.invoke('webinarEnded()');
-                    }
+                    endmeeting();
                     break;
                 default:
                     break;
@@ -36,9 +37,8 @@ v.addListener(async function (e, down) {
         } else {
             switch (e.name) {
                 case 'NUMPAD 0':
-                    generateHandshake();
-                    await bower.invoke('setHandshake("' + handshake + '")');
-                    await bower.launchZoom('https://zoom.us/s/96138303673', 'brookfieldzoom@gmail.com', '4Nephi112');
+                    // send remote to sign in page
+                    remote_server.startSignInProcess();
                     break;
                 case 'BACKSPACE':
                     //exec('shutdown /s /t 1');
@@ -52,11 +52,26 @@ v.addListener(async function (e, down) {
     }
 });
 
-const togglefeed = async function() {
-    console.log('toggle feed');
+async function signInWithZoomInfo(data) {
+    console.log(data);
+    return;
+    generateHandshake();
+    await bower.invoke('setHandshake("' + handshake + '")');
+    await bower.launchZoom('https://zoom.us/s/96138303673', 'brookfieldzoom@gmail.com', '4Nephi112');
 }
-const endmeeting = async function() {
-    console.log('end meeting');
+
+const togglefeed = async function(hnd) {
+    if (bower.zoomRunning && hnd == handshake) {
+        await bower.zoomToggle('A');
+        await bower.zoomToggle('V');
+    }
+}
+const endmeeting = async function(hnd) {
+    if (bower.zoomRunning && hnd == handshake) {
+        if (await bower.zoomPressEnd()) {
+            await bower.invoke('webinarEnded()');
+        }
+    }
 }
 
 async function remoteConnected() {
@@ -65,11 +80,8 @@ async function remoteConnected() {
 
 // main
 (async () => {
-    remote_server.setSpecialResponses([
-        ['/togglefeed', togglefeed],
-        ['/endmeeting', endmeeting]
-    ])
-    remote_server.begin(remoteConnected);
+    remote_server.init(getHand, remoteConnected, signInWithZoomInfo, togglefeed, endmeeting);
+    remote_server.begin();
     let remoteAddr = [remote_server.host, remote_server.port]
     await bower.init("file:///" + __dirname + '/web/index.html?qr=' + JSON.stringify(remoteAddr));
 })();
