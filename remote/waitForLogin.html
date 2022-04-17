@@ -94,8 +94,12 @@ html, body {
 const url = new URL(window.location.href);
 const socket = io.connect(url.protocol + '//' + url.host);
 
-socket.on('loginNow', () => {
-    window.location.href = '/signIn';
+socket.on('returnSignInSuccess', (yesOrNo) => {
+    if (yesOrNo) {
+        window.location.href = '/remote';
+    } else {
+        window.location.href = '/';
+    }
 });
     </script>
 </body>

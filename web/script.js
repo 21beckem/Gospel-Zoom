@@ -42,7 +42,3 @@ function webinarEnded() {
     clearInterval(timerInterval);
     HandShakeEl.innerHTML = '<a>HandShake</a><br>';
 }
-function remoteConnected() {
-    console.log('remote opened');
-    QRcontainer.style.display = 'none';
-}

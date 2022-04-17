@@ -21,8 +21,8 @@ html, body {
 <body>
     <img id="screenserver">
     <script>
-const handshake = '1234';
-const socket = io.connect('http://localhost:1820');
+const url = new URL(window.location.href);
+const socket = io.connect(url.protocol + '//' + url.host);
 socket.on('image', (data) => {
     var bytes = new Uint8Array(data);
     console.log(data);
@@ -30,7 +30,7 @@ socket.on('image', (data) => {
     img.src = `data:image/jpeg;base64,${encode(bytes)}`;
 });
 setInterval(() => {
-    socket.volatile.emit("pingImage", handshake);;
+    socket.volatile.emit("pingImage");
 }, 500);
 
 function encode (input) {

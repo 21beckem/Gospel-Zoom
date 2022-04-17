@@ -1,18 +1,20 @@
 const path = require('path'),
     screenshot = require('screenshot-desktop'),
     express = require('express'),
-    app = express(),
-    server = require('http').Server(app),
+    app = express();
+app.use(express.urlencoded({ extended: true }));
+const server = require('http').Server(app),
     io = require('socket.io')(server),
     ip = require('ip');
 
 var currentSocket = null;
 
-var gethandshake = () => {};
+var currentRemoteIP = null;
+var TrustedRemote = null;
+
 var launchZoom = () => {};
 var toggleAV = () => {};
 var endMeeting = () => {};
-var remoteConnected = () => {};
 
 class IO_REMOTE {
     constructor(port) {
@@ -22,49 +24,71 @@ class IO_REMOTE {
     begin() {
         server.listen(this.port);
     }
-    startSignInProcess() {
-        if (currentSocket == null) {
-            console.log("ERROR. No remote connected yet!");
-        } else {
-            currentSocket.emit('loginNow');
+    returnSignInSuccess(yesOrNo) {
+        currentSocket.emit('returnSignInSuccess', yesOrNo);
+        if (yesOrNo) {
+            TrustedRemote = currentRemoteIP;
         }
     }
-    init(getHandshake_func, remoteConnected_func, launchZoom_func, toggleAV_func, endMeeting_func) {
-        gethandshake = getHandshake_func;
+    resetRemoteMemory() {
+        currentSocket = null;
+        TrustedRemote = null;
+        TrustedRemote = null;
+    }
+    webinarEnded() {
+        currentSocket.emit('webinarEnded');
+    }
+    init(launchZoom_func, toggleAV_func, endMeeting_func) {
         launchZoom = launchZoom_func;
         toggleAV = toggleAV_func;
         endMeeting = endMeeting_func;
-        remoteConnected = remoteConnected_func;
+
+        app.get('/remote-style.css', (req, res) => {
+            res.sendFile(path.join(__dirname, 'remote/style.css'));
+        });
+        app.get('/churchZoomIcon', (req, res) => {
+            res.sendFile(path.join(__dirname, 'remote/churchZoomIcon.png'));
+        });
+        app.get('/remote-script.js', (req, res) => {
+            res.sendFile(path.join(__dirname, 'remote/script.js'));
+        });
 
         app.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, 'remote/waitForLogin.html'));
-        });
-        app.get('/signIn', (req, res) => {
             res.sendFile(path.join(__dirname, 'remote/signIn.html'));
         });
-        app.get('/launchZoomNow', (req, res) => {
-            launchZoom(req);
+        app.get('/remote', (req, res) => {
             res.sendFile(path.join(__dirname, 'remote/remote.html'));
         });
+        app.post('/launchZoomNow', (req, res) => {
+            if (TrustedRemote == null) {
+                currentRemoteIP = req.socket.remoteAddress;
+                launchZoom(req.body);
+                res.sendFile(path.join(__dirname, 'remote/waitForLogin.html'));
+            } else {
+                res.send("<h3>ERROR:<h3><p>Only 1 remote at a time<p>");
+            }
+        });
         app.get('/togglefeed', (req, res) => {
-            toggleAV(req);
-            res.send('1');
+            if (req.socket.remoteAddress == TrustedRemote) {
+                res.send('1');
+                toggleAV();
+            } else {
+                res.send('0');
+            }
         });
         app.get('/endmeeting', (req, res) => {
-            endMeeting(req);
-            res.send('1');
-        });
-
-        app.get('/video', (req, res) => {
-            res.sendFile(path.join(__dirname, 'screenserver/index.html'));
+            if (req.socket.remoteAddress == TrustedRemote) {
+                res.send('1');
+                endMeeting();
+            } else {
+                res.send('0');
+            }
         });
         
         io.on('connection', (socket) => {
             currentSocket = socket;
-            console.log('remote connected');
-            remoteConnected();
-            socket.on('pingImage', (hnd) => {
-                if (gethandshake() == hnd) {
+            socket.on('pingImage', () => {
+                if (socket.handshake.address == TrustedRemote) {
                     screenshot().then((img) => {
                         socket.emit('image', img);
                     });

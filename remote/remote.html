@@ -11,7 +11,8 @@
 <link rel="apple-touch-icon" sizes="76x76" href="../churchZoomIcon.png">
 <link rel="apple-touch-icon" sizes="120x120" href="../churchZoomIcon.png">
 <link rel="apple-touch-icon" sizes="152x152" href="../churchZoomIcon.png">
-<link rel="stylesheet"  href="style.css">
+<link rel="stylesheet"  href="remote-style.css">
+<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
@@ -29,13 +30,13 @@
 <div id="mainContent">
     <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; options</span>
     <div id="successBox" class="alert alert-success">
-        <strong>Success!</strong> Information successfully saved.
+        <strong>Success!</strong> Zoom successfully launched on Gospel-Zoom
     </div>
     <div id="errorBox" class="alert alert-error">
-        <strong>Oh no!</strong> There's been an error. It could be the handshake or the connection.
+        <strong>Oh no!</strong> The Webinar ended :(  Hopefully that was on purpose
     </div>
     <div id="page-home" class="page">
-        <div id="previewScreenToggleBox"><a>Preview Feed:</a><input onclick="handlePreviewToggle(this)" type="checkbox" id="previewScreenToggleBox"></div>
+        <div id="previewScreenToggleBox"><a>Preview Feed:</a><input onclick="handlePreviewToggle(this.checked)" type="checkbox" id="previewScreenToggleBox"></div>
         <br>
         <div id="previewScreenBox">
             <!-- <img id="previewImg" class="screen" src="../churchZoomIcon.png" onerror="showAlert('errorBox',5000)" alt="error"> -->
@@ -86,6 +87,9 @@
     </div>
 </div>
 
-<script id="mainScript"  src="script.js"></script>
+<script id="mainScript"  src="remote-script.js"></script>
+<script>setTimeout(()=>{
+    showAlert('successBox');
+}, 2000)</script>
 </body>
 </html> 

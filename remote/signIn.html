@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="signIn-css.css">
     <title>Sign In - Zoom</title>
     <style>
 html, body {
@@ -15,7 +14,7 @@ html, body {
     font-family: 'Lato','Helvetica','Arial';
     font-size: 13px;
     color: rgb(120, 120, 120);
-    overflow: hidden;
+    overflow-x: hidden;
 }
 .logo {
     width: auto;
@@ -48,7 +47,7 @@ html, body {
 }
 .formInput {
     margin-top: 8px;
-    width: calc(100% - 20px);
+    width: calc(100% - 22px);
     border-radius: 7px;
     padding: 10px;
     border: 1px solid rgb(120, 120, 120);
@@ -60,7 +59,7 @@ input:focus {
 l {
     color: rgb(14, 113, 235)
 }
-#submit {
+.submit {
     border: none;
     background-color: rgb(14,113,235);
     color: white;
@@ -68,6 +67,23 @@ l {
     border-radius: 7px;
     padding: 12px;
     font-size: 16px;
+}
+.submit:active {
+    background-color: rgb(14, 98, 200);
+}
+.container {
+    width: 92%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+    transform: scaleX(1);
+    position: fixed;
+    top: 150px;
+}
+.hidden {
+    transform: scaleX(0);
 }
     </style>
 </head>
@@ -90,18 +106,34 @@ l {
         background-color: rgb(231, 231, 231);
         height: 1px">
         <br>
-        <form action="launchZoomNow" method="get">
-            <label for="email">Email Address</label>
-            <input class="formInput" name="email" type="text" placeholder="Email Address">
-            <br><br><br>
-            <label for="password">Password</label>
-            <input class="formInput" name="password" type="password" placeholder="Password">
-    
-            <br><br><br>
-            <a>By signing in, I agree to the <l>Zoom's Privacy Statement</l> and <l>Terms of Service.</l></a>
-            <br><br>
-            <input id="submit" type="submit" value="Sign In">
+        <form action="launchZoomNow" method="POST">
+            <div class="container" id="emailAndPass" style="transform-origin: left;">
+                <label for="email">Email Address</label>
+                <input class="formInput" name="email" type="email" placeholder="Email Address" value="brookfieldzoom@gmail.com">
+                <br><br><br>
+                <label for="password">Password</label>
+                <input class="formInput" name="password" type="password" placeholder="Password" value="4Nephi112">
+                <br><br><br>
+                <a>By signing in, I agree to the <l>Zoom's Privacy Statement</l> and <l>Terms of Service.</l></a>
+                <br><br>
+                <button type="button" class="submit" onclick="transitionToWebId()">Sign In</button>
+            </div>
+            <div class="container hidden" id="idContainer" style="transform-origin: right;">
+                <label for="webinarid">Webinar Id</label>
+                <input class="formInput" name="webinarid" type="number" placeholder="Webinar Id" value="96138303673">
+                <br><br>
+                <input class="submit" type="submit" value="Launch">
+            </div>
         </form>
     </div>
+    <script>
+const _ = (x) => {return document.getElementById(x)}
+const emailAndPass = _('emailAndPass');
+const idContainer = _('idContainer');
+function transitionToWebId() {
+    emailAndPass.classList.add('hidden');
+    idContainer.classList.remove('hidden');
+}
+    </script>
 </body>
 </html>

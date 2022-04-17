@@ -28,7 +28,7 @@ class Bower {
         this.homepage = null;
         this.zoompage = null;
     }
-    async launchZoom(startLink, email, password) {
+    async launchZoom(startLink, email, password, _callback=()=>{}) {
         this.zoompage = await this.browser.newPage();
 
         await this.zoompage.goto('https://zoom.us/switch_account?backUrl=' + encodeURIComponent(startLink));
@@ -39,7 +39,13 @@ class Bower {
         );
         await this.zoompage.waitForNavigation();
         await this.sleep(100);
-
+        let launched = !(await this.zoompage.evaluate(`document.body.innerText.includes("cannot start")`));
+        _callback(launched);
+        if (!launched) {
+            await this.zoompage.close();
+            return false;
+        }
+        
         await keyboard.type(Key.Tab);
         await keyboard.type(Key.Tab);
         await keyboard.type(Key.Enter);
@@ -47,12 +53,16 @@ class Bower {
         this.zoomRunning = true;
         await this.sleep(5000);
         await this.zoompage.close();
+        await mouse.setPosition(new Point(this.screen_width / 2, this.screen_width / 2));
+        await mouse.leftClick();
+        await this.sleep(100);
         await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
         await mouse.leftClick();
         await this.sleep(50);
         await keyboard.pressKey(Key.LeftAlt, Key.Tab);
         this.sleep(250);
         await keyboard.releaseKey(Key.LeftAlt, Key.Tab);
+        return true;
     }
     async zoomToggle(AorV) {
         let avKey = (AorV.toLowerCase()=='a') ? Key.A : Key.V;
@@ -65,6 +75,7 @@ class Bower {
             await keyboard.releaseKey(Key.LeftAlt, Key.Q);
             await this.sleep(100);
             await keyboard.type(Key.Enter);
+            this.sleep(200);
             await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
             await mouse.leftClick();
             this.ending = false;
