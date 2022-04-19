@@ -3,7 +3,7 @@ const { GlobalKeyboardListener } = require("node-global-key-listener");
 const v = new GlobalKeyboardListener();
 
 const browser = require('./browser.js');
-const remote = require('./new-remote.js');
+const remote = require('./remote.js');
 const remote_server = new remote.IO_REMOTE(1820);
 const bower = new browser.Bower();
 

@@ -1,9 +1,16 @@
 function _(x) {return document.getElementById(x);}
+const qrCodeSize = 200;
 function setIPconnectionQR() {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
     const ipAddr = JSON.parse(urlParams.get('qr'));
-    new QRCode(_("remoteUrlQR"), 'http://' + ipAddr.join(':'));
+    new QRCode(_("remoteUrlQR"), {
+        text: 'http://' + ipAddr.join(':'),
+        width: qrCodeSize,
+        height: qrCodeSize,
+        colorDark : "#000000",
+        colorLight : "#ffffff"
+    });
     IPaddrTxt.innerHTML = '<u>' + ipAddr.join('</u> : <u>') + '</u>';
 }
 setTimeout(setIPconnectionQR, 1000);
@@ -20,7 +27,6 @@ String.prototype.toHHMMSS = function () {
 }
 const IPaddrTxt =_('IPaddrTxt');
 const QRcontainer = _('QRcontainer');
-const HandShakeEl = _('handshake');
 const timerContainer = _('timerContainer');
 const timerEl = _('timer');
 
@@ -29,16 +35,7 @@ function setTimer() {
     var len = (new Date() - timeAtWebinarStart) / 1000;
     timerEl.innerHTML = String(Math.floor(len)).toHHMMSS();
 }
-
-// exposed functions:
-function setHandshake(shake) {
-    timerContainer.style.display = 'block';
-    timeAtWebinarStart = new Date();
-    timerInterval = setInterval(setTimer, 1000);
-    HandShakeEl.innerHTML = '<a>HandShake</a><br>' + shake;
-}
 function webinarEnded() {
     timerContainer.style.display = 'none';
     clearInterval(timerInterval);
-    HandShakeEl.innerHTML = '<a>HandShake</a><br>';
 }

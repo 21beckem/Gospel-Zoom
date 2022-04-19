@@ -71,6 +71,9 @@ l {
 .submit:active {
     background-color: rgb(14, 98, 200);
 }
+.submit:disabled {
+    background-color: rgb(122, 180, 251);
+}
 .container {
     width: 92%;
     height: auto;
@@ -84,6 +87,14 @@ l {
 }
 .hidden {
     transform: scaleX(0);
+}
+#previousBtn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 5px 5px 8px -8px black;
 }
     </style>
 </head>
@@ -109,30 +120,75 @@ l {
         <form action="launchZoomNow" method="POST">
             <div class="container" id="emailAndPass" style="transform-origin: left;">
                 <label for="email">Email Address</label>
-                <input class="formInput" name="email" type="email" placeholder="Email Address" value="brookfieldzoom@gmail.com">
+                <input class="formInput" oninput="checkSignInValid()" name="email" id="emailInput" type="email" placeholder="Email Address">
                 <br><br><br>
                 <label for="password">Password</label>
-                <input class="formInput" name="password" type="password" placeholder="Password" value="4Nephi112">
+                <input class="formInput" oninput="checkSignInValid()" name="password" id="passInput" type="password" placeholder="Password">
                 <br><br><br>
                 <a>By signing in, I agree to the <l>Zoom's Privacy Statement</l> and <l>Terms of Service.</l></a>
                 <br><br>
-                <button type="button" class="submit" onclick="transitionToWebId()">Sign In</button>
+                <button id="signInBtn" type="button" class="submit" onclick="transitionToWebId()" disabled>Sign In</button>
             </div>
             <div class="container hidden" id="idContainer" style="transform-origin: right;">
                 <label for="webinarid">Webinar Id</label>
-                <input class="formInput" name="webinarid" type="number" placeholder="Webinar Id" value="96138303673">
+                <input oninput="makeSureValidWebId()" id="webinarid" class="formInput" name="webinarid" type="number" placeholder="Webinar Id">
                 <br><br>
-                <input class="submit" type="submit" value="Launch">
+                <button id="launchBtn" type="button" class="submit" onclick="saveWebIdAndLaunch()" disabled>Launch</button>
+                <br><br>
+                <button type="button" id="previousBtn" onclick="previousPage()">← Go Back</button>
+                <br><br>
             </div>
         </form>
     </div>
     <script>
-const _ = (x) => {return document.getElementById(x)}
+Storage.prototype.setObject = function(key, value) { 
+    this.setItem(key, JSON.stringify(value)); 
+}
+Storage.prototype.getObject = function(key) { 
+    var value = this.getItem(key);
+    return value && JSON.parse(value); 
+}
+function _(x) {return document.getElementById(x);}
+
+let webId = null;
+const webinarid = _('webinarid');
+const launchBtn = _('launchBtn');
+const emailInput = _('emailInput');
+const passInput = _('passInput');
 const emailAndPass = _('emailAndPass');
 const idContainer = _('idContainer');
+const signInBtn = _('signInBtn');
+function checkSignInValid() {
+    if (!emailInput.checkValidity() || emailInput.value == '' || passInput.value == '') {
+        signInBtn.disabled = true;
+        return false;
+    }
+    signInBtn.disabled = false;
+    return true;
+}
 function transitionToWebId() {
-    emailAndPass.classList.add('hidden');
-    idContainer.classList.remove('hidden');
+    if (checkSignInValid()) {
+        emailAndPass.classList.add('hidden');
+        idContainer.classList.remove('hidden');
+    }
+}
+function previousPage() {
+    emailAndPass.classList.remove('hidden');
+    idContainer.classList.add('hidden');
+}
+window.onload = ()=>{
+    webId = localStorage.getObject('webId');
+    webinarid.value = webId;
+    makeSureValidWebId();
+}
+function saveWebIdAndLaunch() {
+    let thisWebId = webinarid.value;
+    webId = parseInt(thisWebId);
+    localStorage.setObject('webId', webId);
+    document.forms[0].submit();
+}
+function makeSureValidWebId() {
+    launchBtn.disabled = (webinarid.value.toString().length != 11);
 }
     </script>
 </body>

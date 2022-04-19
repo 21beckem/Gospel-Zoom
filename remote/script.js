@@ -1,11 +1,3 @@
-Storage.prototype.setObject = function(key, value) { 
-    this.setItem(key, JSON.stringify(value)); 
-}
-Storage.prototype.getObject = function(key) { 
-    var value = this.getItem(key);
-    return value && JSON.parse(value); 
-}
-
 let NavOpen = false;
 function _(x) {return document.getElementById(x);}
 const sideNav = _("sideNav");
@@ -40,12 +32,10 @@ function openPage(pageName) {
     switch (pageName) {
         case 'home':
             page_home.style.display = 'block';
-            page_handshake.style.display = 'none';
             page_about.style.display = 'none';
             break;
         case 'about':
             page_home.style.display = 'none';
-            page_handshake.style.display = 'none';
             page_about.style.display = 'block';
             break;
         default:
@@ -90,6 +80,7 @@ class SCREEN_server {
     runInterval(TorF) {
         this.serving = TorF;
         if (TorF) {
+            this.socket.volatile.emit("pingImage");
             this.screenInterval = setInterval(() => {
                 this.socket.volatile.emit("pingImage");
             }, 500);

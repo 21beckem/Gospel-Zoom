@@ -22,7 +22,6 @@
     </div>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <a href="javascript:void(0)" onclick="openPage('home')">Home</a>
-    <a href="javascript:void(0)" onclick="openPage('handshake')">Handshake</a>
     <a href="javascript:void(0)" onclick="openPage('about')" style="font-size:smaller">About</a>
     
 </div>
@@ -33,7 +32,7 @@
         <strong>Success!</strong> Zoom successfully launched on Gospel-Zoom
     </div>
     <div id="errorBox" class="alert alert-error">
-        <strong>Oh no!</strong> The Webinar ended :(  Hopefully that was on purpose
+        <strong>Webinar Ended</strong> The Webinar ended. Hopefully that was on purpose
     </div>
     <div id="page-home" class="page">
         <div id="previewScreenToggleBox"><a>Preview Feed:</a><input onclick="handlePreviewToggle(this.checked)" type="checkbox" id="previewScreenToggleBox"></div>
@@ -56,17 +55,6 @@
             </div>
         </div>
     </div>
-    <div style="display: none;" id="page-handshake" class="page">
-        <br><br><br>
-        <center>
-            <h4>Handshake:</h4>
-            <br><br>
-            <input id="handshakeInput" value="" type="number" autocomplete="off" oninput="verifyHandshakeLength()">
-            <br>
-            <br><br>
-            <button class="saveBtn" onclick="saveHandshake()">Save</button>
-        </center>
-    </div>
     <div style="display: none;" id="page-about" class="page">
         <br><br><br>
         <div id="aboutInfo">
@@ -77,7 +65,7 @@
             Author: Michael Becker<br>
             <br><br><br>
             <a>Remote Version:</a>
-            <a>0.2.1</a>
+            <a>2.1.4</a>
             <br><br><br><br>
             My website:<br>
             <a href="confreports.org">ConfReports.org</a><br>
@@ -88,8 +76,5 @@
 </div>
 
 <script id="mainScript"  src="remote-script.js"></script>
-<script>setTimeout(()=>{
-    showAlert('successBox');
-}, 2000)</script>
 </body>
 </html> 
