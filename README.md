@@ -15,10 +15,13 @@
 </p>
 
 ## Installation
+Built on NodeJS v16.14.2
 
-1. Download latest release from the [releases](https://github.com/21beckem/Gospel-Zoom/releases/latest) page
-2. Extract the zip to a local folder
-3. Done!
+1. Download the code as zip and extract it to a local folder.
+2. Open extracted folder in cmd and run
+```bash
+npm install
+```
 
 ## Zoom Setup
 1. In your Webinar options, ensure that `Enable Practice Session` is turned off
@@ -34,4 +37,4 @@
 ## Usage
 
 1. Ensure the device you're using as your remote is on the same WiFi as the Gospel Zoom&trade; server.
-2. Open the Gospel-Zoom folder and run Gospel-Zoom.exe
+2. Open the Gospel-Zoom folder and run Gospel-Zoom.bat
