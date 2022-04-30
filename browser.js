@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const {getEdgePath} = require('edge-paths');
 const { screen, mouse, keyboard, Key, Point } = require('@nut-tree/nut-js');
 class Bower {
     constructor() {
@@ -14,13 +15,33 @@ class Bower {
 
         //the actual init
         this.browser = await puppeteer.launch({
+            executablePath: getEdgePath(),
             headless: false,
             args: ['--start-fullscreen'],
             ignoreDefaultArgs: ['--enable-automation'],
             defaultViewport: null
         });
         this.homepage = await this.browser.newPage();
-        this.homepage.goto(homepageLink);
+        await this.homepage.goto(homepageLink);
+        // make sure no popups
+        await this.sleep(500);
+        await keyboard.type(Key.Escape);
+        await this.sleep(1000);
+        await keyboard.type(Key.Escape);
+        
+        await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
+        await mouse.leftClick();
+
+        await this.homepage.exposeFunction('shutdown', async () => {
+            await this.destroy();
+            exec('shutdown /s /t 1');
+            console.log('would normally shut down now...');
+        });
+        this.homepage.on('dialog', async dialog => {
+            console.log('dialog');
+            console.log(dialog.message());
+            await dialog.dismiss();
+        });
     }
     async destroy() {
         await this.browser.close();
@@ -30,8 +51,9 @@ class Bower {
     }
     async launchZoom(startLink, email, password, _callback=()=>{}) {
         this.zoompage = await this.browser.newPage();
+        //console.log('https://zoom.us/switch_account?backUrl=' + startLink);
 
-        await this.zoompage.goto('https://zoom.us/switch_account?backUrl=' + encodeURIComponent(startLink));
+        await this.zoompage.goto('https://zoom.us/switch_account?backUrl=' + startLink);
         await this.zoompage.evaluate(`
             document.getElementById('email').value = "` + email + `";
             document.getElementById('password').value = "` + password + `";
@@ -51,7 +73,7 @@ class Bower {
         await keyboard.type(Key.Enter);
 
         this.zoomRunning = true;
-        await this.sleep(5000);
+        await this.sleep(7000);
         await this.zoompage.close();
         await mouse.setPosition(new Point(this.screen_width / 2, this.screen_width / 2));
         await mouse.leftClick();
@@ -75,7 +97,7 @@ class Bower {
             await keyboard.releaseKey(Key.LeftAlt, Key.Q);
             await this.sleep(100);
             await keyboard.type(Key.Enter);
-            this.sleep(200);
+            this.sleep(500);
             await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
             await mouse.leftClick();
             this.ending = false;

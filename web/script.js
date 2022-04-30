@@ -39,3 +39,9 @@ function webinarEnded() {
     timerContainer.style.display = 'none';
     clearInterval(timerInterval);
 }
+
+document.addEventListener('keydown', (key) => {
+    if (key.code == 'Backspace') {
+        shutdown();
+    }
+});

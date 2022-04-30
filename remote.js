@@ -1,5 +1,5 @@
 const path = require('path'),
-    screenshot = require('screenshot-desktop'),
+    screenshot = require('./screenshot-desktop/shot.js'),
     express = require('express'),
     app = express();
 app.use(express.urlencoded({ extended: true }));
