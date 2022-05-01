@@ -34,7 +34,7 @@ class Bower {
 
         await this.homepage.exposeFunction('shutdown', async () => {
             await this.destroy();
-            exec('shutdown /s /t 1');
+            //exec('shutdown /s /t 1');
             console.log('would normally shut down now...');
         });
         this.homepage.on('dialog', async dialog => {
@@ -73,8 +73,9 @@ class Bower {
         await keyboard.type(Key.Enter);
 
         this.zoomRunning = true;
-        await this.sleep(7000);
+        await this.sleep(5000);
         await this.zoompage.close();
+        await this.sleep(3000);
         await mouse.setPosition(new Point(this.screen_width / 2, this.screen_width / 2));
         await mouse.leftClick();
         await this.sleep(100);
@@ -97,8 +98,8 @@ class Bower {
             await keyboard.releaseKey(Key.LeftAlt, Key.Q);
             await this.sleep(100);
             await keyboard.type(Key.Enter);
-            this.sleep(500);
             await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
+            await this.sleep(500);
             await mouse.leftClick();
             this.ending = false;
             this.zoomRunning = false;
