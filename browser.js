@@ -77,14 +77,14 @@ class Bower {
         await this.zoompage.close();
         await this.sleep(3000);
         await mouse.setPosition(new Point(this.screen_width / 2, this.screen_height / 2));
-        await mouse.leftClick();
+        /*await mouse.leftClick();
         await this.sleep(100);
         await mouse.setPosition(new Point(this.screen_width, this.screen_height / 2));
         await mouse.leftClick();
         await this.sleep(50);
         await keyboard.pressKey(Key.LeftAlt, Key.Tab);
         this.sleep(250);
-        await keyboard.releaseKey(Key.LeftAlt, Key.Tab);
+        await keyboard.releaseKey(Key.LeftAlt, Key.Tab);*/
         return true;
     }
     async zoomToggle(AorV) {
