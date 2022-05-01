@@ -16,7 +16,7 @@
 
 ## Installation
 
-1. Go to the [Releases](releases/latest) page and download the latest zip
+1. Go to the [Releases](https://github.com/21beckem/Gospel-Zoom/releases/latest) page and download the latest zip
 2. Extract downloaded zip to local folder
 
 ## Zoom Setup
