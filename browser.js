@@ -25,10 +25,10 @@ class Bower {
         this.homepage = await this.browser.newPage();
         await this.homepage.goto(homepageLink);
         // make sure no popups
-        await this.sleep(500);
+        /*await this.sleep(500);
         await keyboard.type(Key.Escape);
         await this.sleep(1000);
-        await keyboard.type(Key.Escape);
+        await keyboard.type(Key.Escape);*/
         
         await mouse.setPosition(new Point(this.screen_width, this.screen_height / 2));
         await mouse.leftClick();
@@ -36,11 +36,6 @@ class Bower {
         await this.homepage.exposeFunction('shutdown', async () => {
             exec('shutdown /s /t 1');
             //console.log('would normally shut down now...');
-        });
-        this.homepage.on('dialog', async dialog => {
-            console.log('dialog');
-            console.log(dialog.message());
-            await dialog.dismiss();
         });
     }
     async destroy() {
