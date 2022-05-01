@@ -30,7 +30,7 @@
 
 ## Installation
 
-1. Dowload code as zip and extract to local folder
+1. Download code as zip and extract to local folder
 2. In extracted folder, launch cmd and run:
 ```bash
 npm install
