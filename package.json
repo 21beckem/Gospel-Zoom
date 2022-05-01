@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "pkg -t node16-win-x64 index.js && move /y index.exe releaseTest/Gospel-Zoom.exe"
+    "build": "nexe index.js && move /y Gospel-Zoom.exe releaseTest/Gospel-Zoom.exe"
   },
   "repository": {
     "type": "git",
