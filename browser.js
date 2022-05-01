@@ -98,7 +98,7 @@ class Bower {
             await keyboard.releaseKey(Key.LeftAlt, Key.Q);
             await this.sleep(100);
             await keyboard.type(Key.Enter);
-            await mouse.setPosition(new Point(this.screen_width, this.screen_width / 2));
+            await mouse.setPosition(new Point(this.screen_height, this.screen_width / 2));
             await this.sleep(500);
             await mouse.leftClick();
             this.ending = false;
