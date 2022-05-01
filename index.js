@@ -1,7 +1,5 @@
 const __dir = (process.pkg == undefined) ? __dirname : process.cwd();
 
-const { exec } = require("child_process");
-
 const browser = require('./browser.js');
 const remote = require('./remote.js');
 const remote_server = new remote.IO_REMOTE(1820);
