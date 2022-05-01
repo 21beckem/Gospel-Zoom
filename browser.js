@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const { exec } = require('child_process');
 const {getEdgePath} = require('edge-paths');
 const { screen, mouse, keyboard, Key, Point } = require('@nut-tree/nut-js');
 class Bower {
@@ -29,13 +30,12 @@ class Bower {
         await this.sleep(1000);
         await keyboard.type(Key.Escape);
         
-        await mouse.setPosition(new Point(this.screen_height, this.screen_width / 2));
+        await mouse.setPosition(new Point(this.screen_width, this.screen_height / 2));
         await mouse.leftClick();
 
         await this.homepage.exposeFunction('shutdown', async () => {
-            await this.destroy();
-            //exec('shutdown /s /t 1');
-            console.log('would normally shut down now...');
+            exec('shutdown /s /t 1');
+            //console.log('would normally shut down now...');
         });
         this.homepage.on('dialog', async dialog => {
             console.log('dialog');
@@ -76,10 +76,10 @@ class Bower {
         await this.sleep(5000);
         await this.zoompage.close();
         await this.sleep(3000);
-        await mouse.setPosition(new Point(this.screen_height / 2, this.screen_width / 2));
+        await mouse.setPosition(new Point(this.screen_width / 2, this.screen_height / 2));
         await mouse.leftClick();
         await this.sleep(100);
-        await mouse.setPosition(new Point(this.screen_height, this.screen_width / 2));
+        await mouse.setPosition(new Point(this.screen_width, this.screen_height / 2));
         await mouse.leftClick();
         await this.sleep(50);
         await keyboard.pressKey(Key.LeftAlt, Key.Tab);
@@ -98,7 +98,7 @@ class Bower {
             await keyboard.releaseKey(Key.LeftAlt, Key.Q);
             await this.sleep(100);
             await keyboard.type(Key.Enter);
-            await mouse.setPosition(new Point(this.screen_height, this.screen_width / 2));
+            await mouse.setPosition(new Point(this.screen_width, this.screen_height / 2));
             await this.sleep(500);
             await mouse.leftClick();
             this.ending = false;
